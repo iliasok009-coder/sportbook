@@ -48,7 +48,20 @@ const TEXTS = {
     total: "Итого",
     pickTime: "Выберите время: нажмите на начало, затем на конец",
     bookSelected: "Забронировать",
-    clear: "Сбросить"
+    clear: "Сбросить",
+    support: "Поддержка",
+    supportSub: "Напишите нам, модераторы получат письмо и ответят вам",
+    subject: "Тема",
+    message: "Сообщение",
+    sendTicket: "Отправить",
+    ticketSent: "Обращение отправлено",
+    myTickets: "Мои обращения",
+    ticketOpen: "Открыто",
+    ticketClosed: "Закрыто",
+    tickets: "Обращения в поддержку",
+    closeTicket: "Закрыть",
+    reopenTicket: "Открыть снова",
+    tooMany: "Слишком много обращений, попробуйте позже"
   },
 
   kk: {
@@ -99,7 +112,20 @@ const TEXTS = {
     total: "Барлығы",
     pickTime: "Уақытты таңдаңыз: басын, содан кейін соңын басыңыз",
     bookSelected: "Брондау",
-    clear: "Тазарту"
+    clear: "Тазарту",
+    support: "Қолдау",
+    supportSub: "Бізге жазыңыз, модераторлар хат алып, жауап береді",
+    subject: "Тақырып",
+    message: "Хабарлама",
+    sendTicket: "Жіберу",
+    ticketSent: "Өтініш жіберілді",
+    myTickets: "Менің өтініштерім",
+    ticketOpen: "Ашық",
+    ticketClosed: "Жабық",
+    tickets: "Қолдау өтініштері",
+    closeTicket: "Жабу",
+    reopenTicket: "Қайта ашу",
+    tooMany: "Өтініш тым көп, кейінірек қайталаңыз"
   },
 
   en: {
@@ -150,7 +176,20 @@ const TEXTS = {
     total: "Total",
     pickTime: "Pick a time: tap the start, then the end",
     bookSelected: "Book",
-    clear: "Clear"
+    clear: "Clear",
+    support: "Support",
+    supportSub: "Write to us, moderators will get an email and reply to you",
+    subject: "Subject",
+    message: "Message",
+    sendTicket: "Send",
+    ticketSent: "Request sent",
+    myTickets: "My requests",
+    ticketOpen: "Open",
+    ticketClosed: "Closed",
+    tickets: "Support requests",
+    closeTicket: "Close",
+    reopenTicket: "Reopen",
+    tooMany: "Too many requests, try again later"
   }
 };
 
