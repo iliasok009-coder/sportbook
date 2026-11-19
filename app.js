@@ -30,7 +30,8 @@ const state = {
 
   halls: {},          // цены: { basketball: 8000, ... }
   bookings: [],       // [{ hall, date, hour, price, userId, name, phone }]
-  reviews: []         // [{ id, userId, name, text, stars, createdAt }]
+  reviews: [],        // [{ id, userId, name, text, stars, createdAt }]
+  tickets: []         // обращения в поддержку: свои, а у модератора все
 };
 
 let realtimeChannel = null;
@@ -163,7 +164,7 @@ function renderHeader() {
     .map((l) => `<button data-lang="${l}" class="${l === state.lang ? "on" : ""}">${LANG_LABELS[l]}</button>`)
     .join("");
 
-  const tabs = [["book", t("book")], ["mine", t("mine")], ["reviews", t("reviews")]];
+  const tabs = [["book", t("book")], ["mine", t("mine")], ["reviews", t("reviews")], ["support", t("support")]];
   if (state.isModerator) tabs.push(["mod", t("mod")]);   // вкладка только для модераторов
 
   let html = tabs
@@ -185,6 +186,7 @@ function render() {
   if (state.tab === "book") app.innerHTML = viewBooking();
   else if (state.tab === "mine") app.innerHTML = viewMyBookings();
   else if (state.tab === "reviews") app.innerHTML = viewReviews();
+  else if (state.tab === "support") app.innerHTML = viewSupport();
   else if (state.tab === "mod") app.innerHTML = state.isModerator ? viewModeration() : `<div class="card empty">${t("noAccess")}</div>`;
 }
 
@@ -367,7 +369,43 @@ function viewModeration() {
   return `
     <h2>${t("mod")}</h2>
     <p class="sub">${t("modInfo")}</p>
-    <div class="card">${rows || `<div class="empty">${t("empty")}</div>`}</div>`;
+    <div class="card">${rows || `<div class="empty">${t("empty")}</div>`}</div>
+    <h2 style="font-size:20px">${t("tickets")}</h2>
+    <div class="card">${state.tickets.map((x) => ticketRow(x, true)).join("") || `<div class="empty">${t("empty")}</div>`}</div>`;
+}
+
+// --- Поддержка: форма обращения и список своих обращений ---
+function viewSupport() {
+  const mine = state.tickets.filter((x) => x.userId === state.userId);
+  return `
+    <h2>${t("support")}</h2>
+    <p class="sub">${t("supportSub")}</p>
+    <div class="card">
+      <label>${t("subject")}</label>
+      <input id="ticketSubject" maxlength="100">
+      <label>${t("message")}</label>
+      <textarea id="ticketMessage" rows="4" maxlength="1000"></textarea>
+      <button class="btn accent" data-action="ticket">${t("sendTicket")}</button>
+    </div>
+    <h2 style="font-size:20px">${t("myTickets")}</h2>
+    <div class="card">${mine.map((x) => ticketRow(x, false)).join("") || `<div class="empty">${t("empty")}</div>`}</div>`;
+}
+
+// Одно обращение. У модератора добавляются контакты автора и кнопка закрытия.
+function ticketRow(x, forModerator) {
+  const closed = x.status === "closed";
+  const date = new Date(x.createdAt).toLocaleString(LOCALES[state.lang]);
+  const contacts = forModerator ? `${esc(x.name)} · ${esc(x.phone)} · ${esc(x.email)} · ` : "";
+  return `
+    <div class="row">
+      <div>
+        <b>${esc(x.subject)}</b>
+        <span class="tag ${closed ? "past" : ""}">${closed ? t("ticketClosed") : t("ticketOpen")}</span>
+        <div class="msg">${esc(x.message)}</div>
+        <div class="meta">${contacts}${date}</div>
+      </div>
+      ${forModerator ? `<button class="btn ghost small" data-ticket="${x.id}|${closed ? "open" : "closed"}">${closed ? t("reopenTicket") : t("closeTicket")}</button>` : ""}
+    </div>`;
 }
 
 
@@ -414,7 +452,7 @@ async function bookSelected() {
 
   if (error) {
     // 23505 = нарушение уникальности: кто-то успел раньше
-    showToast(error.code === "23505" ? t("busy") : error.message);
+    showToast(error.code === "23505" ? t("busy") : t("error"));
   } else {
     showToast(t("booked"));
   }
@@ -458,6 +496,28 @@ async function sendReview() {
 
 async function deleteReview(id) {
   const { error } = await db.from("reviews").delete().eq("id", id);
+  if (error) showToast(t("error"));
+  await loadData();
+}
+
+// Отправить обращение. Письмо модераторам уходит из базы автоматически (webhook).
+async function sendTicket() {
+  const subject = $("#ticketSubject").value.trim();
+  const message = $("#ticketMessage").value.trim();
+  if (!subject || !message) return;
+
+  const { error } = await db.from("support_tickets").insert({ user_id: state.userId, subject, message });
+  if (error) {
+    showToast(error.message.includes("too_many_tickets") ? t("tooMany") : t("error"));
+    return;
+  }
+  showToast(t("ticketSent"));
+  await loadData();
+}
+
+// Модератор закрывает или заново открывает обращение
+async function setTicketStatus(id, status) {
+  const { error } = await db.from("support_tickets").update({ status }).eq("id", id);
   if (error) showToast(t("error"));
   await loadData();
 }
@@ -511,6 +571,8 @@ document.addEventListener("click", (event) => {
     $("#reviewText").value = text;
   }
   else if (d.deleteReview) deleteReview(d.deleteReview);
+  else if (d.ticket) { const [id, status] = d.ticket.split("|"); setTicketStatus(id, status); }
+  else if (d.action === "ticket") sendTicket();
   else if (d.action === "book") bookSelected();
   else if (d.action === "clear") { state.selection = null; render(); }
   else if (d.action === "signin") signIn();
@@ -559,6 +621,24 @@ async function loadData() {
     createdAt: row.created_at
   }));
 
+  // Обращения: обычный пользователь видит свои, модератор все (правила RLS)
+  const ticketsResult = await db
+    .from("support_tickets")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  state.tickets = (ticketsResult.data || []).map((row) => ({
+    id: row.id,
+    userId: row.user_id,
+    name: row.user_name,
+    phone: row.user_phone,
+    email: row.user_email,
+    subject: row.subject,
+    message: row.message,
+    status: row.status,
+    createdAt: row.created_at
+  }));
+
   render();
 }
 
@@ -571,7 +651,7 @@ async function onSessionChange(session) {
 
   // Пользователь вышел: очищаем состояние
   if (!session) {
-    Object.assign(state, { userId: null, profile: null, isModerator: false, bookings: [], reviews: [], selection: null, ready: true });
+    Object.assign(state, { userId: null, profile: null, isModerator: false, bookings: [], reviews: [], tickets: [], selection: null, ready: true });
     render();
     return;
   }
@@ -595,6 +675,7 @@ async function onSessionChange(session) {
     .channel("live")
     .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, loadData)
     .on("postgres_changes", { event: "*", schema: "public", table: "reviews" }, loadData)
+    .on("postgres_changes", { event: "*", schema: "public", table: "support_tickets" }, loadData)
     .subscribe();
 }
 
