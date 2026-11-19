@@ -8,3 +8,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_qkQcW8acOFWv_VNvlH6rIA_E9lpYCpU";
 const OPEN_HOUR = 8;     // первый слот начинается в 08:00
 const CLOSE_HOUR = 22;   // последний слот заканчивается в 22:00
 const DAYS_AHEAD = 7;    // на сколько дней вперёд можно бронировать
+
+// ===== Залы (id должны совпадать с таблицей halls в базе) =====
+// Названия берутся из i18n.js (ключи hall_basketball и т.д.), цены из базы данных.
+const HALL_IDS = ["basketball", "football", "volleyball"];
