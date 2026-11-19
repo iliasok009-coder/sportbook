@@ -414,7 +414,7 @@ async function bookSelected() {
 
   if (error) {
     // 23505 = нарушение уникальности: кто-то успел раньше
-    showToast(error.code === "23505" ? t("busy") : t("error"));
+    showToast(error.code === "23505" ? t("busy") : error.message);
   } else {
     showToast(t("booked"));
   }
