@@ -1,7 +1,7 @@
 // ===== Настройки подключения к Supabase =====
 // Project Settings -> API в панели Supabase.
 // anon-ключ публичный, его можно держать в коде. service_role сюда вставлять НЕЛЬЗЯ.
-const SUPABASE_URL = "https://vsemnmwlblzkohohbahs.supabase.co;
+const SUPABASE_URL = "https://vsemnmwlblzkohohbahs.supabase.com;
 const SUPABASE_ANON_KEY = "sb_publishable_qkQcW8acOFWv_VNvlH6rIA_E9lpYCpU";
 
 // ===== Расписание зала =====
