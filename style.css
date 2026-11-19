@@ -222,3 +222,29 @@ input, textarea {
   max-width: 90%;
 }
 #toast.on { opacity: 1; }
+
+/* ===== Выбор зала ===== */
+.halls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.hall {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 12px;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.hall b { display: block; }
+.hall small { color: var(--muted); }
+.hall.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.hall.on small { color: var(--bg); opacity: .75; }
+
+/* ===== Выбранное время и итог ===== */
+.slot.selected { background: var(--accent); border-color: var(--accent); color: #1F1F1F; }
+.slot.selected small { color: #1F1F1F; }
+
+.summary { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+.summary .hint { color: var(--muted); }
+.summary .price { font-size: 20px; font-weight: 700; }
+.summary .buttons { display: flex; gap: 8px; }
