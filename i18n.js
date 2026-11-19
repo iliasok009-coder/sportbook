@@ -39,7 +39,16 @@ const TEXTS = {
     thanks: "Спасибо за отзыв",
     modInfo: "Все брони и отзывы. Доступно только модераторам",
     noAccess: "Доступ закрыт: только для модераторов",
-    error: "Ошибка, попробуйте ещё раз"
+    error: "Ошибка, попробуйте ещё раз",
+    hall_basketball: "Баскетбольный зал",
+    hall_football: "Футбольный зал",
+    hall_volleyball: "Волейбольный зал",
+    perHour: "/ час",
+    hours: "ч",
+    total: "Итого",
+    pickTime: "Выберите время: нажмите на начало, затем на конец",
+    bookSelected: "Забронировать",
+    clear: "Сбросить"
   },
 
   kk: {
@@ -81,7 +90,16 @@ const TEXTS = {
     thanks: "Пікіріңіз үшін рахмет",
     modInfo: "Барлық брондау мен пікірлер. Тек модераторларға қолжетімді",
     noAccess: "Қолжетімсіз: тек модераторларға арналған",
-    error: "Қате, қайталап көріңіз"
+    error: "Қате, қайталап көріңіз",
+    hall_basketball: "Баскетбол залы",
+    hall_football: "Футбол залы",
+    hall_volleyball: "Волейбол залы",
+    perHour: "/ сағат",
+    hours: "сағ",
+    total: "Барлығы",
+    pickTime: "Уақытты таңдаңыз: басын, содан кейін соңын басыңыз",
+    bookSelected: "Брондау",
+    clear: "Тазарту"
   },
 
   en: {
@@ -123,7 +141,16 @@ const TEXTS = {
     thanks: "Thanks for your review",
     modInfo: "All bookings and reviews. Moderators only",
     noAccess: "Access denied: moderators only",
-    error: "Something went wrong, try again"
+    error: "Something went wrong, try again",
+    hall_basketball: "Basketball hall",
+    hall_football: "Football hall",
+    hall_volleyball: "Volleyball hall",
+    perHour: "/ hour",
+    hours: "h",
+    total: "Total",
+    pickTime: "Pick a time: tap the start, then the end",
+    bookSelected: "Book",
+    clear: "Clear"
   }
 };
 
