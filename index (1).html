@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sport Hall</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Шапка: логотип, переключатель языка, меню -->
+  <header>
+    <div class="wrap">
+      <div class="top">
+        <div class="logo">Sport<span>Hall</span></div>
+        <div class="lang" id="lang"></div>
+      </div>
+      <nav id="nav"></nav>
+    </div>
+  </header>
+
+  <!-- Сюда JS выводит текущую страницу -->
+  <main id="app"></main>
+
+  <!-- Всплывающие уведомления -->
+  <div id="toast"></div>
+
+  <!-- Библиотека Supabase (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+
+  <!-- Наши скрипты. Порядок важен -->
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
