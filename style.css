@@ -248,3 +248,6 @@ input, textarea {
 .summary .hint { color: var(--muted); }
 .summary .price { font-size: 20px; font-weight: 700; }
 .summary .buttons { display: flex; gap: 8px; }
+
+/* ===== Поддержка ===== */
+.msg { white-space: pre-wrap; margin: 4px 0; }
